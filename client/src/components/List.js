@@ -7,7 +7,7 @@ const List = ({list}) =>
             <img src={image_url+list.poster_path} />
         </div>
         <h4>{list.title}</h4>
-        <p>{list.overview}</p>
+        <p>{list.excerpt}</p>
     </div>
 
 export default List;
