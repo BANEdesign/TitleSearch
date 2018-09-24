@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import List from './List';
+import { Pager } from 'react-bootstrap';
+
 //todo 
 // const { API_KEY } = process.env
-// const API_URL = 'http://api.musicgraph.com/api/v2/artist/suggest'
-
+const baseUrl='https://api.themoviedb.org/3/search/'
+        const movieParam ='movie?'
+        const showParam ='tv?'
 
 class ListsContainer extends Component {
 
@@ -12,13 +15,18 @@ class ListsContainer extends Component {
         super(props)
         this.state={
             searchQuery:'',
-            lists:[]
+            lists:[],
+            selectedOption: 'null',
+            page:1
         };
+    }
+    componentDidMount() {
+        window.scrollTo(0, 0)
     }
 
     handleInputChange = () => {
         this.setState({
-          searchQuery: this.search.value
+          searchQuery: this.search.value,
         }, () => {
           if (this.state.searchQuery && this.state.searchQuery.length > 1) {
             if (this.state.searchQuery.length % 2 === 0) {
@@ -28,14 +36,43 @@ class ListsContainer extends Component {
         })
       }
       
+    handleOptionChange = (changeEvent) => {
+    this.setState({
+        selectedOption: changeEvent.target.value
+    }, () => {
+        console.log('Options selected: ', this.state.selectedOption)
+        });
+    } 
+    //todo these are functions are redundant, could be one function with if/else statement
+    handlePrevPage = () => {
+        this.setState({
+            page: this.state.page - 1
+        }, () => {
+            this.searchMovies(this.state.searchQuery)
+        })
+    } 
+
+    handleNextPage = () => {
+        this.setState({
+            page: this.state.page + 1
+        }, () => {
+            this.searchMovies(this.state.searchQuery)
+        })
+    }
     searchMovies = () => {
-        const baseUrl='https://api.themoviedb.org/3/search/movie?'
-        axios.get(baseUrl,{
+        var filteredUrl = ''
+
+        if(this.state.selectedOption === 'movie'){
+            filteredUrl = baseUrl+movieParam
+        }else{
+            filteredUrl = baseUrl+showParam
+        }
+        axios.get(filteredUrl,{
             params:{
-               query:this.state.searchQuery,
+               query: this.state.searchQuery,
                api_key:'db99740bbdd2065a8f852dd7ba3e8b45',
                language:'en-US',
-               page:'1',
+               page: this.state.page,
                include_adult:'false'
             }
         })    
@@ -54,43 +91,47 @@ class ListsContainer extends Component {
         <p>
             <form>
                 <input
-                    placeholder="Search for..."
+                    size="80"
+                    placeholder="Search for Titles..."
                     ref={input => this.search = input}
                     onChange={this.handleInputChange}/>
                 <p>{this.state.searchQuery}</p>
-            </form>
-        </p>     
-                <div className="lists-container">
-                        {this.state.lists.map( list => {
-                        return (<List list={list} key={list.id} />) 
-                    })}
+                <div className="radio">
+                    <label>
+                        <input type="radio" 
+                            value="movie" 
+                            checked={this.state.selectedOption === 'movie'} 
+                            onChange={this.handleOptionChange}  />
+                        Movies
+                    </label>
+                    <p>
+                    <label>
+                        <input type="radio" 
+                            value="show" 
+                            checked={this.state.selectedOption === 'show'} 
+                            onChange={this.handleOptionChange}/>
+                        Shows
+                    </label>
+                    </p>
                 </div>
+            </form>
+        </p>
+            {this.state.lists.map( list => (
+                <List list={list} key={list.id} />
+            ))}
+            <Pager>
+                <Pager.Item 
+                    onClick={this.handlePrevPage}>
+                     &larr; Prev Page
+                </Pager.Item>
+                <Pager.Item 
+                    onClick={this.handleNextPage}>
+                    Next Page &rarr;
+                </Pager.Item>
+            </Pager>
         </div>     
         )
-    }   
-    //todo if this ends up not being needed
-    // componentDidMount(){
-    //     this.searchMovies(query)
-    //     //axios.get('https://api.themoviedb.org/3/search/movie?query=Titanic&api_key=db99740bbdd2065a8f852dd7ba3e8b45&language=en-US&page=1&include_adult=false')
-    // }
-
-    // render() {
-    //     return (
-    //       <form onInput={event => this.onInput(event.target.value)}>
-    //       <p>
-    //         <input
-    //           type="text"
-    //           size="80"
-    //           placeholder="Search movies"
-    //           value={this.props.searchQuery}
-    //         />{' '}
-    //         <button className="btn btn-sm btn-primary">Search</button>
-    //       </p>
-    //       </form>
-    //     );
-    //   }
-
-    
+    }     
 }        
 
 export default ListsContainer;

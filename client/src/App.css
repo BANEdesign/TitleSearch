@@ -1,5 +1,12 @@
 .App {
   text-align: center;
+  background-color: #32363a;
+  color: black;
+  font-family: sans-serif;
+  font-style: 1rem;
+  line-height: 1.5;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .App-logo {
@@ -25,4 +32,18 @@
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+li {list-style-type: none;}
+
+.movie-images {
+  display:inline-block;
+ }
+.movie-images img{
+  display:inline-block;
+  max-width: 90%;
+  vertical-align: middle;
+} 
+.radio label{
+  color:white;
 }
