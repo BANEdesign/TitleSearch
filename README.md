@@ -12,7 +12,7 @@ install Node.js
 ```
 cd titleSearch
 cd client
-npm-install
+npm install
 ```
 then start the React server
 ```
