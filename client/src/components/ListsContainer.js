@@ -3,8 +3,9 @@ import axios from 'axios';
 import List from './List';
 import { Pager } from 'react-bootstrap';
 
-//todo 
-// const { API_KEY } = process.env
+//stored api_key
+const API_KEY = process.env.REACT_APP_API_KEY
+//the base url remains the same but movies and shows have a different url parameter
 const baseUrl='https://api.themoviedb.org/3/search/'
         const movieParam ='movie?'
         const showParam ='tv?'
@@ -20,30 +21,29 @@ class ListsContainer extends Component {
             page:1
         };
     }
+    // When the list is refreshed the focus goes back to the top
     componentDidMount() {
         window.scrollTo(0, 0)
     }
-
+    // validates query so that the request can be made with no errors
     handleInputChange = () => {
         this.setState({
           searchQuery: this.search.value,
         }, () => {
           if (this.state.searchQuery && this.state.searchQuery.length > 1) {
-            if (this.state.searchQuery.length % 2 === 0) {
+            // if (this.state.searchQuery.length % 2 === 0) {
               this.searchMovies(this.state.searchQuery)
-            }
+            // }
           } 
         })
       }
-      
+    // radio button listener  
     handleOptionChange = (changeEvent) => {
     this.setState({
         selectedOption: changeEvent.target.value
-    }, () => {
-        console.log('Options selected: ', this.state.selectedOption)
         });
     } 
-    //todo these are functions are redundant, could be one function with if/else statement
+    // Prev and Next navigators
     handlePrevPage = () => {
         this.setState({
             page: this.state.page - 1
@@ -59,6 +59,7 @@ class ListsContainer extends Component {
             this.searchMovies(this.state.searchQuery)
         })
     }
+    // builds url and makes request
     searchMovies = () => {
         var filteredUrl = ''
 
@@ -67,25 +68,26 @@ class ListsContainer extends Component {
         }else{
             filteredUrl = baseUrl+showParam
         }
+    // takes the base url for either show or movies and adds parameters  
         axios.get(filteredUrl,{
             params:{
                query: this.state.searchQuery,
-               api_key:'db99740bbdd2065a8f852dd7ba3e8b45',
+               api_key: API_KEY,
                language:'en-US',
                page: this.state.page,
                include_adult:'false'
             }
         })    
         .then(response =>{
-            console.log(response)
+            // takes json response and sets it as lists array
             this.setState({
                 lists: response.data.results,
-            //todo this should be reused whereever the list will show 
             })
         })
         .catch(error => console.log(error))
     }
     render() {
+
         return(
         <div className="search-form">  
         <p>
@@ -115,7 +117,8 @@ class ListsContainer extends Component {
                     </p>
                 </div>
             </form>
-        </p>
+        </p> 
+            {/* iterates through json and makes a view w/title and link to details */}
             {this.state.lists.map( list => (
                 <List list={list} key={list.id} />
             ))}
