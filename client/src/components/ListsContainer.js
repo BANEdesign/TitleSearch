@@ -31,9 +31,7 @@ class ListsContainer extends Component {
           searchQuery: this.search.value,
         }, () => {
           if (this.state.searchQuery && this.state.searchQuery.length > 1) {
-            // if (this.state.searchQuery.length % 2 === 0) {
-              this.searchMovies(this.state.searchQuery)
-            // }
+            this.searchMovies(this.state.searchQuery)
           } 
         })
       }
