@@ -5,12 +5,11 @@ A search app for popular movie and show titles
 
 Try this app out on heroku: https://title-search.herokuapp.com/ (The site takes a while to load thanks for your patience)
 
+### Install
 Create a `.env` file in the project's root directory and and add/save the api key
 ```
 REACT_APP_API_KEY=XXXXXXXXXXXXXXXXXXXX
 ```
-### Install
-
 Inside of the titleSearch directory, in the client folder
 install Node.js
 ```
